@@ -1,0 +1,9 @@
+import { AppRegistry } from 'react-native';
+//import App from './App';
+//import Test from './Test';
+//import ListView from './ListView';
+//import Weather from './Weather';
+import Todo from './Todo';
+
+
+AppRegistry.registerComponent('ReactSecond', () => Todo);
