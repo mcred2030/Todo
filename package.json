@@ -1,0 +1,32 @@
+{
+  "name": "ReactToDo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "eslint": "^4.19.1",
+    "react": "16.3.1",
+    "react-native": "0.55.2",
+    "react-native-datepicker": "^1.7.2",
+    "react-native-keyboard-input": "^5.2.2",
+    "react-native-picker": "^4.3.6",
+    "react-switch-case": "^1.0.3",
+    "unescape": "^1.0.1",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-jest": "22.4.3",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-native": "^4.0.0",
+    "jest": "22.4.3",
+    "react-native-keyboard-input": "^5.2.2",
+    "react-test-renderer": "16.3.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
