@@ -22,13 +22,14 @@ class Todo extends Component {
     newToDo: "",
     loadedToDos: false,
     toDos: {},
-    memodate:"2018-05-10"
+    memodate:"2018-05-15",
+    todate: "" //new Date()
   };
   componentDidMount = () => {
     this._loadToDos();
   };
   render() {
-    const { newToDo, loadedToDos, toDos, memodate } = this.state;
+    const { newToDo, loadedToDos, toDos, memodate, todate } = this.state;
 
     return (
       <View style={styles.container}>
@@ -51,26 +52,24 @@ class Todo extends Component {
           <View style={styles.calendar}>
             <DatePicker
                 style={{width: 200}}
-                date={this.state.memodate}
+                date={todate}
                 mode="date"
                 placeholder="select date"
                 format="YYYY-MM-DD"
-                minDate="2018-05-01"
-                maxDate="2018-08-20"
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 customStyles={{
-                  dateIcon: {
+                  dateInput: {
                     position: 'absolute',
                     left: 0,
                     top: 4,
                     marginLeft: 0
                   },
-                  dateInput: {
-                    marginLeft: 36
+                  dateIcon: {
+                    marginRight: 20
                   }
                 }}
-                onDateChange={(date) => {this.setState({memodate: date})}}
+                onDateChange={(date) => {this.setState({todate: date, newToDo: date})}}
               />
           </View>
         </View>
@@ -85,6 +84,7 @@ class Todo extends Component {
                     uncompleteToDo={this._uncompleteToDo}
                     completeToDo={this._completeToDo}
                     updateToDo={this._updateToDo}
+                    alarmDay={this.state.memodate}
                     {...toDo}
                   />
                 ))}
@@ -110,7 +110,7 @@ class Todo extends Component {
     }
   };
   _addToDo = () => {
-    const { newToDo } = this.state;
+    const { newToDo, todate } = this.state;
     if (newToDo !== "") {
       this.setState(prevState => {
         const ID = uuidv1();
@@ -119,7 +119,8 @@ class Todo extends Component {
             id: ID,
             isCompleted: false,
             text: newToDo,
-            createdAt: Date.now()
+            createdAt: Date.now(),
+            alarmDay: todate
           }
         };
         const newState = {
@@ -235,12 +236,10 @@ const styles = StyleSheet.create({
     })
   },
   textInput: {
-    flex: 5,
-    backgroundColor: 'skyblue'
+    flex: 7,
   },
   calendar: {
-    flex: 1,
-    backgroundColor: 'powderblue'
+    flex: 3,
   },
   dataList: {
     flex: 5,

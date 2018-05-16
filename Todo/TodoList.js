@@ -24,11 +24,12 @@ class TodoList extends Component {
     id: PropTypes.string.isRequired,
     uncompleteToDo: PropTypes.func.isRequired,
     completeToDo: PropTypes.func.isRequired,
-    updateToDo: PropTypes.func.isRequired
+    updateToDo: PropTypes.func.isRequired,
+    alarmDay: PropTypes.string.isRequired,
   };
   render() {
     const { isEditing, toDoValue } = this.state;
-    const { text, id, deleteToDo, isCompleted } = this.props;
+    const { text, id, deleteToDo, isCompleted, alarmDay } = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.column}>
@@ -55,14 +56,17 @@ class TodoList extends Component {
               underlineColorAndroid={"transparent"}
             />
           ) : (
-            <Text
-              style={[
-                styles.text,
-                isCompleted ? styles.completedText : styles.uncompletedText
-              ]}
-            >
-              {text}
-            </Text>
+            <View style={styles.rowstyle}>
+              <Text
+                style={[
+                  styles.text2,
+                  isCompleted ? styles.completedText : styles.uncompletedText
+                ]}
+              >
+                {text}
+              </Text>
+              <Text>{alarmDay}</Text>
+            </View>
           )}
         </View>
 
@@ -150,6 +154,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 20,
     marginVertical: 20
+  },
+  rowstyle: {
+    marginVertical: 20
+  },
+  text2: {
+    fontWeight: "600",
+    fontSize: 20,
   },
   completedText: {
     color: "#bbb",
