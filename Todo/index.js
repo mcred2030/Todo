@@ -10,10 +10,11 @@ import {
   ScrollView,
   AsyncStorage
 } from "react-native";
-
-import uuidv1 from "uuid/v1";
 import TodoList from "./TodoList";
+//import List from "./List";
+import uuidv1 from "uuid/v1";
 import DatePicker from "react-native-datepicker";
+
 
 const { height, width } = Dimensions.get("window");
 
@@ -36,44 +37,50 @@ class Todo extends Component {
         <StatusBar barStyle="light-content" />
         <Text style={styles.title}>To Do</Text>
         <View style={styles.card}>
-          <View style={styles.textInput}>
-            <TextInput
-              style={styles.input}
-              placeholder={"add a new task.."}
-              value={newToDo}
-              onChangeText={this._crontollNewToDo}
-              placeholderTextColor={"#999"}
-              returnKeyType={"done"}
-              autoCorrect={false}
-              onSubmitEditing={this._addToDo}
-              underlineColorAndroid={"transparent"}
-            />
+
+          <View style={styles.inputRow}>
+              <View style={styles.textInput}>
+                <TextInput
+                  style={styles.input}
+                  placeholder={"add a new task.."}
+                  value={newToDo}
+                  onChangeText={this._crontollNewToDo}
+                  placeholderTextColor={"#999"}
+                  returnKeyType={"done"}
+                  autoCorrect={false}
+                  onSubmitEditing={this._addToDo}
+                  underlineColorAndroid={"transparent"}
+                />
+              </View>
+              <View style={styles.calendar}>
+                <DatePicker
+                    date={todate}
+                    mode="date"
+                    placeholder="MM.DD"
+                    format="MM.DD"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    customStyles={{
+                      dateInput: {
+                        position: 'absolute',
+                        left: 0,
+                        top: 10,
+                        marginLeft: 0,
+                        width: 50,
+                        height: 30,
+
+                      },
+                      dateIcon: {
+                        top: 5,
+                        marginRight: 5,
+                      }
+                    }}
+                    onDateChange={(date) => {this.setState({todate: date})}}
+                  />
+              </View>
           </View>
-          <View style={styles.calendar}>
-            <DatePicker
-                style={{width: 200}}
-                date={todate}
-                mode="date"
-                placeholder="select date"
-                format="YYYY-MM-DD"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateInput: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0
-                  },
-                  dateIcon: {
-                    marginRight: 20
-                  }
-                }}
-                onDateChange={(date) => {this.setState({todate: date, newToDo: date})}}
-              />
-          </View>
-        </View>
-        <View style={styles.dataList}>
+
+          <View style={styles.dataList}>
             <ScrollView contentContainerStyle={styles.toDos}>
               {Object.values(toDos)
                 .reverse()
@@ -84,15 +91,17 @@ class Todo extends Component {
                     uncompleteToDo={this._uncompleteToDo}
                     completeToDo={this._completeToDo}
                     updateToDo={this._updateToDo}
-                    alarmDay={this.state.memodate}
+                    alarmDay={toDo.id}
                     {...toDo}
                   />
                 ))}
             </ScrollView>
         </View>
 
+      </View>       
+
         
-      </View>
+    </View>
     );
   }
   _crontollNewToDo = text => {
@@ -110,7 +119,7 @@ class Todo extends Component {
     }
   };
   _addToDo = () => {
-    const { newToDo, todate } = this.state;
+    const { newToDo, todate  } = this.state;
     if (newToDo !== "") {
       this.setState(prevState => {
         const ID = uuidv1();
@@ -126,6 +135,7 @@ class Todo extends Component {
         const newState = {
           ...prevState,
           newToDo: "",
+          todate: "",
           toDos: {
             ...prevState.toDos,
             ...newToDoObject
@@ -177,13 +187,13 @@ class Todo extends Component {
       return { ...newState };
     });
   };
-  _updateToDo = (id, text) => {
+  _updateToDo = (id, text, alarmDay) => {
     this.setState(prevState => {
       const newState = {
         ...prevState,
         toDos: {
           ...prevState.toDos,
-          [id]: { ...prevState.toDos[id], text: text }
+          [id]: { ...prevState.toDos[id], text: text , alarmDay: alarmDay }
         }
       };
       this._saveToDos(newState.toDos);
@@ -216,7 +226,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "white",
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     width: width - 25,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -235,19 +245,24 @@ const styles = StyleSheet.create({
       }
     })
   },
+  inputRow: {
+    flexDirection: 'row',
+    borderBottomColor: "#bbb",
+    borderBottomWidth: 1,
+  },
   textInput: {
-    flex: 7,
+    flex: 4,
   },
   calendar: {
-    flex: 3,
+    flex: 1,
+    alignItems: "center",
+    
   },
   dataList: {
     flex: 5,
   },
   input: {
     padding: 20,
-    borderBottomColor: "#bbb",
-    borderBottomWidth: 1,
     fontSize: 25
   },
   toDos: {

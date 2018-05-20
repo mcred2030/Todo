@@ -9,13 +9,14 @@ import {
   Image
 } from "react-native";
 import PropTypes from "prop-types";
+import DatePicker from "react-native-datepicker";
 
 const { width, height } = Dimensions.get("window");
 
 class TodoList extends Component {
   constructor(props) {
     super(props);
-    this.state = { isEditing: false, toDoValue: props.text };
+    this.state = { isEditing: false, toDoValue: props.text, todate: "" };
   }
   static propTypes = {
     text: PropTypes.string.isRequired,
@@ -27,9 +28,14 @@ class TodoList extends Component {
     updateToDo: PropTypes.func.isRequired,
     alarmDay: PropTypes.string.isRequired,
   };
+
+  componentDidMount = () => {
+    //this.todate = this.props.alarmDay;
+  };
+
   render() {
-    const { isEditing, toDoValue } = this.state;
-    const { text, id, deleteToDo, isCompleted, alarmDay } = this.props;
+    const { isEditing, toDoValue, todate, editdate } = this.state;
+    const { text, id, deleteToDo, isCompleted, alarmDay} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.column}>
@@ -42,19 +48,47 @@ class TodoList extends Component {
             />
           </TouchableOpacity>
           {isEditing ? (
-            <TextInput
-              style={[
-                styles.text,
-                styles.input,
-                isCompleted ? styles.completedText : styles.uncompletedText
-              ]}
-              value={toDoValue}
-              multiline={true}
-              onChangeText={this._controllInput}
-              returnKeyType={"done"}
-              onBlur={this._finishEditing}
-              underlineColorAndroid={"transparent"}
-            />
+            <View style={styles.rowstyle}>
+              <TextInput
+                style={[
+                  styles.text2,
+                  styles.input,
+                  isCompleted ? styles.completedText : styles.uncompletedText
+                ]}
+                value={toDoValue}
+                multiline={true}
+                onChangeText={this._controllInput}
+                returnKeyType={"done"}
+                onBlur={this._finishEditing}
+                underlineColorAndroid={"transparent"}
+              />             
+
+                <DatePicker
+                    date={editdate}
+                    mode="date"
+                    placeholder="MM.DD"
+                    format="MM.DD"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    customStyles={{
+                      dateInput: {
+                        position: 'absolute',
+                        left: 0,
+                        top: 10,
+                        marginLeft: 0,
+                        width: 50,
+                        height: 30,
+
+                      },
+                      dateIcon: {
+                        top: 5,
+                        marginRight: 5,
+                      }
+                    }}
+                    onDateChange={(date) => {this.setState({editdate: date})}}
+                  />
+
+            </View>
           ) : (
             <View style={styles.rowstyle}>
               <Text
@@ -65,16 +99,22 @@ class TodoList extends Component {
               >
                 {text}
               </Text>
-              <Text>{alarmDay}</Text>
+              <Text
+                style={[
+                  isCompleted ? styles.completedText : styles.uncompletedText
+                ]}
+              >{alarmDay}</Text>
             </View>
+            
           )}
+          
         </View>
 
         {isEditing ? (
           <View style={styles.actions}>
             <TouchableOpacity onPressOut={this._finishEditing}>
               <View style={styles.actionContainer}>
-                <Image style={styles.icons} source={require('../images/enter.png')} />
+              <Image style={styles.icons} source={require('../images/enter.png')} />
               </View>
             </TouchableOpacity>
           </View>
@@ -111,20 +151,19 @@ class TodoList extends Component {
   };
   _startEditing = event => {
     event.stopPropagation();
-    this.setState({ isEditing: true });
+    this.setState({ isEditing: true, editdate: this.props.alarmDay });
   };
   _finishEditing = event => {
     event.stopPropagation();
-    const { toDoValue } = this.state;
+    const { toDoValue,  editdate} = this.state;
     const { id, updateToDo } = this.props;
-    updateToDo(id, toDoValue);
+    updateToDo(id, toDoValue, editdate);
     this.setState({ isEditing: false });
   };
   _controllInput = text => {
     this.setState({ toDoValue: text });
   };
 }
-
 
 export default TodoList;
 
@@ -183,8 +222,10 @@ const styles = StyleSheet.create({
   },
   input: {
     width: width / 2,
+    /*
     marginVertical: 15,
     paddingBottom: 5
+    */
   },
   icons: {
     width: 20,
