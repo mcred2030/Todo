@@ -8,12 +8,17 @@ import {
   Dimensions,
   Platform,
   ScrollView,
-  AsyncStorage
+  AsyncStorage,
+  Alert,
+  Button,
+  AlertIOS,
+  PushNotificationIOS,
 } from "react-native";
 import TodoList from "./TodoList";
 //import List from "./List";
 import uuidv1 from "uuid/v1";
 import DatePicker from "react-native-datepicker";
+import IconBadge from 'react-native-icon-badge';
 
 
 const { height, width } = Dimensions.get("window");
@@ -30,7 +35,7 @@ class Todo extends Component {
     this._loadToDos();
   };
   render() {
-    const { newToDo, loadedToDos, toDos, memodate, todate } = this.state;
+    const { newToDo, toDos, todate } = this.state;
 
     return (
       <View style={styles.container}>
@@ -44,7 +49,7 @@ class Todo extends Component {
                   style={styles.input}
                   placeholder={"add a new task.."}
                   value={newToDo}
-                  onChangeText={this._crontollNewToDo}
+                  onChangeText={this._contollNewToDo}
                   placeholderTextColor={"#999"}
                   returnKeyType={"done"}
                   autoCorrect={false}
@@ -75,7 +80,8 @@ class Todo extends Component {
                         marginRight: 5,
                       }
                     }}
-                    onDateChange={(date) => {this.setState({todate: date})}}
+                    onDateChange={this._selectDate} 
+                    //onDateChange={(date) => {this.setState({todate: date})} }
                   />
               </View>
           </View>
@@ -104,7 +110,43 @@ class Todo extends Component {
     </View>
     );
   }
-  _crontollNewToDo = text => {
+
+  _selectDate = (date) => {
+
+
+    this.setState({
+      todate: date
+    });
+
+    const { newToDo } = this.state;
+
+    if (newToDo !== "") {
+      this.setState(prevState => {
+        const ID = uuidv1();
+        const newToDoObject = {
+          [ID]: {
+            id: ID,
+            isCompleted: false,
+            text: newToDo,
+            createdAt: Date.now(),
+            alarmDay: date
+          }
+        };
+        const newState = {
+          ...prevState,
+          newToDo: "",
+          todate: "",
+          toDos: {
+            ...prevState.toDos,
+            ...newToDoObject
+          }
+        };
+        this._saveToDos(newState.toDos);
+        return { ...newState };
+      });
+    }
+  };
+  _contollNewToDo = text => {
     this.setState({
       newToDo: text
     });
@@ -119,7 +161,9 @@ class Todo extends Component {
     }
   };
   _addToDo = () => {
+    
     const { newToDo, todate  } = this.state;
+
     if (newToDo !== "") {
       this.setState(prevState => {
         const ID = uuidv1();
@@ -204,6 +248,32 @@ class Todo extends Component {
     const saveToDos = AsyncStorage.setItem("toDos", JSON.stringify(newToDos));
   };
 
+
+  _ShowAlertDialog = () =>{
+ 
+    Alert.alert(
+      
+      // This is Alert Dialog Title
+      'Alert Dialog Title',
+   
+      // This is Alert Dialog Message. 
+      'Alert Dialog Message',
+      [
+        // First Text Button in Alert Dialog.
+        {text: 'Ask me later', onPress: () => console.log('Ask me later Button Clicked')},
+   
+        // Second Cancel Button in Alert Dialog.
+        {text: 'Cancel', onPress: () => console.log('Cancel Button Pressed'), style: 'cancel'},
+   
+        // Third OK Button in Alert Dialog
+        {text: 'OK', onPress: () => console.log('OK ButtonPressed')},
+        
+      ]
+   
+    )
+   
+  }
+
 }
 
 export default Todo;
@@ -256,6 +326,7 @@ const styles = StyleSheet.create({
   calendar: {
     flex: 1,
     alignItems: "center",
+    paddingTop: 10
     
   },
   dataList: {

@@ -59,7 +59,7 @@ class TodoList extends Component {
                 multiline={true}
                 onChangeText={this._controllInput}
                 returnKeyType={"done"}
-                onBlur={this._finishEditing}
+                //onBlur={this._finishEditing}
                 underlineColorAndroid={"transparent"}
               />             
 
