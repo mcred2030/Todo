@@ -67,6 +67,23 @@ RCT_EXPORT_METHOD(badgeSetMinus:(NSInteger)num)
   
   
   UNTimeIntervalNotificationTrigger *trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:15 repeats:NO];
+
+  
+  
+  // Calendar
+  // https://useyourloaf.com/blog/local-notifications-with-ios-10/
+  
+  NSDate *date = [NSDate dateWithTimeIntervalSinceNow:3600];
+  NSDateComponents *triggerDate = [[NSCalendar currentCalendar]   
+              components:NSCalendarUnitYear +
+              NSCalendarUnitMonth + NSCalendarUnitDay +
+              NSCalendarUnitHour + NSCalendarUnitMinute +
+              NSCalendarUnitSecond fromDate:date];
+  
+  
+  
+  
+  
   
   NSString *identifier = @"UYLLocalNotification";
   UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];
