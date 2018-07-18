@@ -3,7 +3,23 @@
 //  ReactSecond
 //
 //  Created by Red Red on 2018. 7. 3..
-//  Copyright © 2018년 Tech2030com. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "HelloWorld.h"
+#import <React/RCTLog.h>
+
+@implementation HelloWorld
+
+RCT_EXPORT_MODULE();
+
+RCT_EXPORT_METHOD(greeting:(NSString *)name)
+{
+  RCTLogInfo(@"Saluton HH, %@", name);
+}
+
+RCT_EXPORT_METHOD(badgeSet:(NSInteger)num)
+{
+  [UIApplication sharedApplication].applicationIconBadgeNumber = num;
+}
+
+@end

@@ -6,8 +6,7 @@
 //  Copyright © 2018년 Tech2030com. All rights reserved.
 //
 
-#ifndef HelloWorld_h
-#define HelloWorld_h
+#import <React/RCTBridgeModule.h>
 
-
-#endif /* HelloWorld_h */
+@interface HelloWorld : NSObject <RCTBridgeModule>
+@end

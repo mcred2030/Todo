@@ -6,8 +6,7 @@
 //  Copyright © 2018년 Tech2030com. All rights reserved.
 //
 
-#ifndef Badge_h
-#define Badge_h
+#import <React/RCTBridgeModule.h>
 
-
-#endif /* Badge_h */
+@interface Badge : NSObject <RCTBridgeModule>
+@end

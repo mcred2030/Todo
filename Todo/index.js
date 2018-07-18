@@ -18,7 +18,8 @@ import TodoList from "./TodoList";
 //import List from "./List";
 import uuidv1 from "uuid/v1";
 import DatePicker from "react-native-datepicker";
-import IconBadge from 'react-native-icon-badge';
+//import IconBadge from 'react-native-icon-badge';
+import Badge from "./Badge";
 
 
 const { height, width } = Dimensions.get("window");
@@ -29,7 +30,8 @@ class Todo extends Component {
     loadedToDos: false,
     toDos: {},
     memodate:"2018-05-15",
-    todate: "" //new Date()
+    todate: "", //new Date()
+    time: '13:30',
   };
   componentDidMount = () => {
     this._loadToDos();
@@ -60,18 +62,20 @@ class Todo extends Component {
               <View style={styles.calendar}>
                 <DatePicker
                     date={todate}
-                    mode="date"
-                    placeholder="MM.DD"
-                    format="MM.DD"
+                    mode="datetime"
+                    placeholder="MM.DD HH:mm"
+                    format="MM.DD HH:mm"
                     confirmBtnText="Confirm"
                     cancelBtnText="Cancel"
+                    minuteInterval={10}
+                    showIcon={false}
                     customStyles={{
                       dateInput: {
                         position: 'absolute',
                         left: 0,
                         top: 10,
                         marginLeft: 0,
-                        width: 50,
+                        width: 100,
                         height: 30,
 
                       },
@@ -84,6 +88,7 @@ class Todo extends Component {
                     //onDateChange={(date) => {this.setState({todate: date})} }
                   />
               </View>
+              
           </View>
 
           <View style={styles.dataList}>
@@ -111,9 +116,22 @@ class Todo extends Component {
     );
   }
 
+  _contollNewToDo = text => {
+    this.setState({
+      newToDo: text
+    });
+  };
+  _loadToDos = async () => {
+    try {
+      const toDos = await AsyncStorage.getItem("toDos");
+      const parsedToDos = JSON.parse(toDos);
+      this.setState({ loadedToDos: true, toDos: parsedToDos || {} });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   _selectDate = (date) => {
-
-
     this.setState({
       todate: date
     });
@@ -141,25 +159,15 @@ class Todo extends Component {
             ...newToDoObject
           }
         };
+        Badge.badgeSetPlus(1,newToDo, date);
+       // Badge.addEvent("log","message");
+
         this._saveToDos(newState.toDos);
         return { ...newState };
       });
     }
   };
-  _contollNewToDo = text => {
-    this.setState({
-      newToDo: text
-    });
-  };
-  _loadToDos = async () => {
-    try {
-      const toDos = await AsyncStorage.getItem("toDos");
-      const parsedToDos = JSON.parse(toDos);
-      this.setState({ loadedToDos: true, toDos: parsedToDos || {} });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  
   _addToDo = () => {
     
     const { newToDo, todate  } = this.state;
@@ -185,12 +193,16 @@ class Todo extends Component {
             ...newToDoObject
           }
         };
+
+        Badge.badgeSetPlus(1,newToDo,todate);
+        //Badge.addEvent("log","message");
+
         this._saveToDos(newState.toDos);
         return { ...newState };
       });
     }
   };
-  _deleteToDo = id => {
+  _deleteToDo = (id, isCompleted) => {
     this.setState(prevState => {
       const toDos = prevState.toDos;
       delete toDos[id];
@@ -198,6 +210,11 @@ class Todo extends Component {
         ...prevState,
         ...toDos
       };
+      if (!isCompleted) {
+        Badge.badgeSetMinus(1);
+      }
+      
+
       this._saveToDos(newState.toDos);
       return { ...newState };
     });
@@ -227,8 +244,13 @@ class Todo extends Component {
           [id]: { ...prevState.toDos[id], isCompleted: true }
         }
       };
+
+      Badge.badgeSetMinus(1);
+
       this._saveToDos(newState.toDos);
       return { ...newState };
+
+      
     });
   };
   _updateToDo = (id, text, alarmDay) => {
@@ -288,9 +310,9 @@ const styles = StyleSheet.create({
   
   title: {
     color: "white",
-    fontSize: 30,
+    fontSize: 25,
     marginTop: 20,
-    fontWeight: "200",
+    fontWeight: "400",
     marginBottom: 10
   },
   card: {

@@ -22,7 +22,7 @@
   
   [self configureLocalNotification];
   
-  [UIApplication sharedApplication].applicationIconBadgeNumber = 10;
+  [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
   
   NSURL *jsCodeLocation;
   

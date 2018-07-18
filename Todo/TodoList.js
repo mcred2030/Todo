@@ -65,18 +65,20 @@ class TodoList extends Component {
 
                 <DatePicker
                     date={editdate}
-                    mode="date"
-                    placeholder="MM.DD"
-                    format="MM.DD"
+                    mode="datetime"
+                    placeholder="MM.DD HH:mm"
+                    format="MM.DD HH:mm"
                     confirmBtnText="Confirm"
                     cancelBtnText="Cancel"
+                    minuteInterval={10}
+                    showIcon={false}
                     customStyles={{
                       dateInput: {
                         position: 'absolute',
                         left: 0,
                         top: 10,
                         marginLeft: 0,
-                        width: 50,
+                        width: 100,
                         height: 30,
 
                       },
@@ -125,12 +127,7 @@ class TodoList extends Component {
                 <Image style={styles.icons} source={require('../images/edit.png')} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPressOut={event => {
-                event.stopPropagation;
-                deleteToDo(id);
-              }}
-            >
+            <TouchableOpacity onPressOut={this._deleteToDo}>
               <View style={styles.actionContainer}>
                 <Image style={styles.icons} source={require('../images/delete.png')} />
               </View>
@@ -140,6 +137,12 @@ class TodoList extends Component {
       </View>
     );
   }
+  _deleteToDo = event => {
+    event.stopPropagation();
+    const { id, isCompleted, deleteToDo } = this.props;
+    deleteToDo(id, isCompleted);
+  };
+
   _toggleComplete = event => {
     event.stopPropagation();
     const { isCompleted, uncompleteToDo, completeToDo, id } = this.props;

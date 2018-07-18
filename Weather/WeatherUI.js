@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image} from 'react-native';
 import PropTypes from 'prop-types';
  
 const weatherCases = {
@@ -67,12 +67,15 @@ class WeatherUI extends Component {
         super(props);
         this.state = { 
             photoSource: null,
+            myphotoSource: null,
             backColors: '#FFFFFF'
         };
       }
 
     componentDidMount() {
         this.setState({ photoSource: this._getImage(this.props.weatherName) });
+
+
 
       }
 
@@ -83,7 +86,8 @@ class WeatherUI extends Component {
                 style={ {flex: 1, flexDirection: 'column', backgroundColor: `${weatherCases[this.props.weatherName].colors}` } }
             >
                 
-                    <View style={styles.upper}>{this.state.photoSource}</View>
+                <View style={styles.upper}>{this.state.photoSource}</View>
+               
                    
                 <View style={styles.lower}>
                     <Text style={styles.subtitle}>The temperature in {this.props.areaName} is {this.props.temp} 
@@ -93,6 +97,7 @@ class WeatherUI extends Component {
                         {weatherCases[this.props.weatherName].subtitle}
                     </Text>
                 </View>
+
             </View>
         );
     }
@@ -163,7 +168,13 @@ const styles = StyleSheet.create({
         fontSize: 24,
         backgroundColor: 'transparent',
         color: '#000'
-    }
+    },
+    backdrop: {
+        flex: 1,
+        flexDirection: "column",
+        width: 200,
+        height: 200
+      },
 });
 
 export default WeatherUI;
